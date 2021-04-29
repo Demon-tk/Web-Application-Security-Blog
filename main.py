@@ -1,5 +1,4 @@
 from scapy.all import *
-from urllib.parse import urlparse
 import tldextract
 import codecs
 import socket
@@ -13,7 +12,7 @@ DNS_PACKETS = set()
 
 
 class DNS_SCHEME:
-    # {'rrname': b'smetrics.redhat.com.', 'type': 5, 'rclass': 1, 'ttl': 2087, 'rdlen': None, 'rdata': b'redhat.com.ssl.sc.omtrdc.net.'}
+    # Used to keep DNS data organized
     def __init__(self, id):
         self.id = id
         self.rrname = None
@@ -27,6 +26,7 @@ class DNS_SCHEME:
 
 
 class regexLifter(Thread):
+    # Used as a thread worker for finding if the first part domain is a tracking domain
     def __init__(self, queue):
         Thread.__init__(self)
         self.queue = queue
@@ -40,6 +40,7 @@ class regexLifter(Thread):
 
 
 class regexWorker(Thread):
+    # Used as a thread worker for finding if the CNAME domain is a tracking domain
     def __init__(self, queue):
         Thread.__init__(self)
         self.queue = queue
@@ -53,6 +54,11 @@ class regexWorker(Thread):
 
 
 def delegate_ip(ip):
+    """
+    Delegates the ip address  to check if it is valid (ipv4 or ipv6)
+    :param ip: An ip address
+    :return: Bool is the ip address is valid or not
+    """
     if check_if_valid_ipv4(ip):
         return True
     if check_if_valid_ipv6(ip):
@@ -62,6 +68,11 @@ def delegate_ip(ip):
 
 
 def check_if_valid_ipv4(pos_ip):
+    """
+    Checks if ipv4 address is legitimate
+    :param pos_ip: A possible ip address
+    :return: Bool if the password is working or not
+    """
     try:
         ipaddress.IPv4Network(pos_ip)
         return True
@@ -70,6 +81,11 @@ def check_if_valid_ipv4(pos_ip):
 
 
 def check_if_valid_ipv6(pos_ip):
+    """
+    Checks if ipv6 address is legitimate
+    :param pos_ip: A possible ip address
+    :return: Bool if the password is working or not
+    """
     try:
         ipaddress.IPv6Network(pos_ip)
         return True
@@ -78,6 +94,11 @@ def check_if_valid_ipv6(pos_ip):
 
 
 def get_hostname(ip):
+    """
+    Get the FQDN from an IP
+    :param ip: The ip address to scan
+    :return: The FQDN name
+    """
     try:
         return socket.getfqdn(ip)
     except:
@@ -85,6 +106,11 @@ def get_hostname(ip):
 
 
 def summary(pkt):
+    """
+    Parses the captured packets and places them into DNS_PACKET objects
+    :param pkt: The packet to parse
+    :return: None
+    """
     # an_records_objects = set()
     count = len(DNS_PACKETS)
     if UDP in pkt:
@@ -125,11 +151,20 @@ def summary(pkt):
 
 
 def get_domain(hostname):
+    """
+    Get the domain of a hostname or url
+    :param hostname: The hostname to get the domain of
+    :return: The domain of the host
+    """
     extract = tldextract.extract(str(hostname))
     return extract.domain
 
 
 def check_cname_cloaking():
+    """
+    Check if the DNS request may potentially use cloaking to hide tracking
+    :return: A set of DNS CNAME request/resonse objects that show different ip or hostname on resolution
+    """
     my_local_set = set()
     for pkt in DNS_PACKETS:
         if int(pkt.type) == 5:
@@ -153,6 +188,12 @@ def check_cname_cloaking():
 
 
 def t_regex(pkt, num):
+    """
+    Scan packets for hosts that are marked as tracking via a modified Adguard list
+    :param pkt: The packet to scan
+    :param num: To scan the origin or destination host
+    :return: None
+    """
     if num == 0:
         var = pkt.rdata
     if num == 1:
@@ -179,6 +220,12 @@ def t_regex(pkt, num):
 
 
 def check_tracking(pos_c_pkt, num):
+    """
+    Generates the workers for regex checking
+    :param pos_c_pkt: The set of packets with DNS objects
+    :param num: Check src or dst host
+    :return: None
+    """
     queue = Queue()
     for x in range(200):
         if num == 0:
@@ -195,6 +242,11 @@ def check_tracking(pos_c_pkt, num):
 
 
 def get_results(pos_c_pkt):
+    """
+    Filter out the results that use CNAME tracking
+    :param pos_c_pkt: A set of DNS object packets
+    :return: A list of CNAME cloaking trackers
+    """
     cname_trackers = set()
     for pkt in pos_c_pkt:
         if not pkt.tracking_tp and pkt.tracking_cname:
@@ -205,14 +257,23 @@ def get_results(pos_c_pkt):
 
 
 def print_pretty(cname_trackers):
+    """
+    Prints CNAME clocking trackers pretty
+    :param cname_trackers: The set of CNAME trackers
+    :return: None
+    """
     print("Original subdomain             |              DNS Resolved Domain                       | Cloaking")
     print("===============================|========================================================|=========")
     for domain in cname_trackers:
         print("{}           |              {}             | {}".format(domain.rrname, domain.rdata,
-                                                                         domain.tracking_cname))
+                                                                       domain.tracking_cname))
 
 
 def init():
+    """
+    Sets up the script to work
+    :return: None
+    """
     capture = "my_pcap2.pcap"
     logging.info("Starting to parse packets")
     dns_obj = sniff(offline=capture, prn=summary)
@@ -229,7 +290,9 @@ def init():
 
 
 def main():
+    """We all know what this method does"""
     init()
 
 
+# Run this
 main()
