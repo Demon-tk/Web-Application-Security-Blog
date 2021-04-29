@@ -197,20 +197,19 @@ def check_tracking(pos_c_pkt, num):
 def get_results(pos_c_pkt):
     cname_trackers = set()
     for pkt in pos_c_pkt:
-        print("{}, tracking: {} -> {}, tracking: ".format(pkt.rrname, pkt.tracking_tp, pkt.rdata, pkt.tracking_cname))
-
         if not pkt.tracking_tp and pkt.tracking_cname:
-            print("#############################")
-            print("FOUND!")
+            print(
+                "{}, tracking: {} -> {}, tracking: ".format(pkt.rrname, pkt.tracking_tp, pkt.rdata, pkt.tracking_cname))
             cname_trackers.add(pkt)
     return cname_trackers
 
 
 def print_pretty(cname_trackers):
-    print("Original subdomain           |              DNS Resolved Domain                | Cloaking")
+    print("Original subdomain             |              DNS Resolved Domain                       | Cloaking")
+    print("===============================|========================================================|=========")
     for domain in cname_trackers:
-        print("{}           |              {}                | {}".format(domain.rrname, domain.rdata,
-                                                                          domain.tracking_cname))
+        print("{}           |              {}             | {}".format(domain.rrname, domain.rdata,
+                                                                         domain.tracking_cname))
 
 
 def init():
@@ -227,7 +226,6 @@ def init():
     logging.info("Filtering final results")
     cname_trackers = get_results(pos_c_pkt)
     print_pretty(cname_trackers)
-
 
 
 def main():
