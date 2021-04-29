@@ -5,6 +5,9 @@ import codecs
 import socket
 import ipaddress
 import re
+from threading import Thread
+from queue import Queue
+import logging
 
 DNS_PACKETS = set()
 
@@ -19,10 +22,34 @@ class DNS_SCHEME:
         self.ttl = None
         self.rdlen = None
         self.rdata = None
-        self.tracking = False
+        self.tracking_cname = False
+        self.tracking_tp = False
 
 
-capture = "my_pcap2.pcap"
+class regexLifter(Thread):
+    def __init__(self, queue):
+        Thread.__init__(self)
+        self.queue = queue
+
+    def run(self):
+        pkt = self.queue.get()
+        try:
+            t_regex(pkt, 1)
+        finally:
+            self.queue.task_done()
+
+
+class regexWorker(Thread):
+    def __init__(self, queue):
+        Thread.__init__(self)
+        self.queue = queue
+
+    def run(self):
+        pkt = self.queue.get()
+        try:
+            t_regex(pkt, 0)
+        finally:
+            self.queue.task_done()
 
 
 def delegate_ip(ip):
@@ -112,31 +139,95 @@ def check_cname_cloaking():
                 src_ip = socket.gethostbyname(pkt.rrname)
                 dst_ip = socket.gethostbyname(pkt.rdata)
 
-                if src_ip != dst_ip:
+                src_hn = get_domain(pkt.rrname)
+                dst_hn = get_domain(pkt.rdata)
+                """print("{} -> {}".format(pkt.rrname, pkt.rdata))
+                print("{} -> {}".format(src_ip, dst_ip))
+                print("{} -> {}".format(src_hn, dst_hn))
+                print("##########################################################################")"""
+                if src_ip != dst_ip or src_hn != dst_hn:
                     # Cloaking here, check if tracking
-                    print("{} is not the same as {}".format(pkt.rrname, pkt.rdata))
+                    # print("{} is not the same as {}".format(pkt.rrname, pkt.rdata))
                     my_local_set.add(pkt)
     return my_local_set
 
 
-def t_regex(pkt):
-    with open("adguard_regex") as f:
-        line = f.readline()
-        if line[0] != '!':
-            test = re.search(line.strip(), pkt.rdata)
+def t_regex(pkt, num):
+    if num == 0:
+        var = pkt.rdata
+    if num == 1:
+        var = pkt.rrname
+
+    with open("adguard_regex.txt") as f:
+        lines = f.readlines()
+    logging.info("Filtering packet {}".format(var))
+    for line in lines:
+        if line[0] == '!':
+            continue
+        else:
+            if type(pkt.rdata) != str:
+                var = codecs.decode(var, 'UTF-8')
+            test = re.search(line.strip(), var)
             if test:
-                pkt.tracking = True
+                logging.info("Found tracking match for {}".format(var))
+                if num == 1:
+                    pkt.tracking_tp = True
+                if num == 0:
+                    pkt.tracking_cname = True
+                break
+    logging.info("Done with {}".format(pkt.id))
 
 
-def check_tracking(pos_c_pkt):
+def check_tracking(pos_c_pkt, num):
+    queue = Queue()
+    for x in range(200):
+        if num == 0:
+            worker = regexWorker(queue)
+        if num == 1:
+            worker = regexLifter(queue)
+        worker.daemon = True
+        worker.start()
     for pkt in pos_c_pkt:
-        pass
+        logging.info("Queueing {}".format(pkt.id))
+        queue.put(pkt)
+    queue.join()
+    logging.info("Done")
+
+
+def get_results(pos_c_pkt):
+    cname_trackers = set()
+    for pkt in pos_c_pkt:
+        print("{}, tracking: {} -> {}, tracking: ".format(pkt.rrname, pkt.tracking_tp, pkt.rdata, pkt.tracking_cname))
+
+        if not pkt.tracking_tp and pkt.tracking_cname:
+            print("#############################")
+            print("FOUND!")
+            cname_trackers.add(pkt)
+    return cname_trackers
+
+
+def print_pretty(cname_trackers):
+    print("Original subdomain           |              DNS Resolved Domain                | Cloaking")
+    for domain in cname_trackers:
+        print("{}           |              {}                | {}".format(domain.rrname, domain.rdata,
+                                                                          domain.tracking_cname))
 
 
 def init():
+    capture = "my_pcap2.pcap"
+    logging.info("Starting to parse packets")
     dns_obj = sniff(offline=capture, prn=summary)
+    logging.info("Starting to check for cloaking")
     pos_c_pkt = check_cname_cloaking()
-    check_tracking(pos_c_pkt)
+    logging.info("Starting check for third-part non-cloaking tracking")
+    check_tracking(pos_c_pkt, 1)
+    logging.info("Starting check for third-part cloaking tracking")
+    check_tracking(pos_c_pkt, 0)
+    logging.info("Done checking for tracking")
+    logging.info("Filtering final results")
+    cname_trackers = get_results(pos_c_pkt)
+    print_pretty(cname_trackers)
+
 
 
 def main():
