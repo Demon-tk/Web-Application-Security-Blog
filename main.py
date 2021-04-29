@@ -4,6 +4,7 @@ import tldextract
 import codecs
 import socket
 import ipaddress
+import re
 
 DNS_PACKETS = set()
 
@@ -18,14 +19,32 @@ class DNS_SCHEME:
         self.ttl = None
         self.rdlen = None
         self.rdata = None
+        self.tracking = False
 
 
 capture = "my_pcap2.pcap"
 
 
-def check_if_valid_ip(pos_ip):
+def delegate_ip(ip):
+    if check_if_valid_ipv4(ip):
+        return True
+    if check_if_valid_ipv6(ip):
+        return True
+    else:
+        return False
+
+
+def check_if_valid_ipv4(pos_ip):
     try:
         ipaddress.IPv4Network(pos_ip)
+        return True
+    except ValueError:
+        return False
+
+
+def check_if_valid_ipv6(pos_ip):
+    try:
+        ipaddress.IPv6Network(pos_ip)
         return True
     except ValueError:
         return False
@@ -50,8 +69,15 @@ def summary(pkt):
             dns_scheme = pkt[DNS]
 
             an_record = dns_scheme.an
+
+            # print(dns_scheme.answers)
+
             if an_record is not None:
                 an_fields = an_record.fields
+
+                # print("###############################")
+                # print(an_fields)
+                # print("\n")
                 if an_fields is not None:
                     my_scheme = DNS_SCHEME(count)
                     my_scheme.rrname = codecs.decode(an_fields.get("rrname"), 'UTF-8')
@@ -63,10 +89,12 @@ def summary(pkt):
                     # Check ip or hostname or none
                     pos_ip = an_fields.get("rdata")
                     if pos_ip is not None:
-                        if check_if_valid_ip(pos_ip):
+                        if delegate_ip(pos_ip):
                             my_scheme.rdata = get_hostname(pos_ip)
-                    # print("Added packet  " + str(count))
-                    DNS_PACKETS.add(my_scheme)
+                        else:
+                            my_scheme.rdata = codecs.decode(pos_ip, 'UTF-8')
+                        # print("Added packet  " + str(count))
+                        DNS_PACKETS.add(my_scheme)
 
 
 def get_domain(hostname):
@@ -75,20 +103,40 @@ def get_domain(hostname):
 
 
 def check_cname_cloaking():
+    my_local_set = set()
     for pkt in DNS_PACKETS:
         if int(pkt.type) == 5:
-            src_hostname = get_hostname(pkt.rrname)
-            dst_hostname = get_hostname(pkt.rdata)
 
-            if dst_hostname is not None:
-                if src_hostname != dst_hostname:
+            if pkt.rdata is not None:
+
+                src_ip = socket.gethostbyname(pkt.rrname)
+                dst_ip = socket.gethostbyname(pkt.rdata)
+
+                if src_ip != dst_ip:
                     # Cloaking here, check if tracking
-                    print("{} is not the same as {}".format(src_hostname, dst_hostname))
+                    print("{} is not the same as {}".format(pkt.rrname, pkt.rdata))
+                    my_local_set.add(pkt)
+    return my_local_set
+
+
+def t_regex(pkt):
+    with open("adguard_regex") as f:
+        line = f.readline()
+        if line[0] != '!':
+            test = re.search(line.strip(), pkt.rdata)
+            if test:
+                pkt.tracking = True
+
+
+def check_tracking(pos_c_pkt):
+    for pkt in pos_c_pkt:
+        pass
 
 
 def init():
     dns_obj = sniff(offline=capture, prn=summary)
-    check_cname_cloaking()
+    pos_c_pkt = check_cname_cloaking()
+    check_tracking(pos_c_pkt)
 
 
 def main():
