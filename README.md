@@ -2,6 +2,8 @@
 
 ## Configuration
 
+Install `requirements.txt`
+
 Insert pcap file as `my_pcap2.pcap` in main directory, or use default pcap file:
 
 # Results
