@@ -20,6 +20,7 @@ Insert pcap file as `my_pcap2.pcap` in main directory, or use default pcap file:
 | `smetrics.redhat.com.` | `redhat.com.ssl.sc.omtrdc.net`   | `True` | 
 
 
-# Bugs
+# Issues
 1) Duplicate CNAME Claoking domains will appear
 2) May review TypeError on result, but will not exit program
+3) Relies on a *possibly* outdated tracking filter list, last updated on **04/28/2021**
