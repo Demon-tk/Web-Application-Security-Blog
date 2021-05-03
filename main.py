@@ -1,12 +1,13 @@
-from scapy.all import *
-import tldextract
 import codecs
-import socket
 import ipaddress
-import re
-from threading import Thread
-from queue import Queue
 import logging
+import re
+import socket
+from queue import Queue
+from threading import Thread
+
+import tldextract
+from scapy.all import *
 
 DNS_PACKETS = set()
 
