@@ -23,6 +23,9 @@ Run `main.py` in terminal with no arguments
 | `smetrics.redhat.com.` | `redhat.com.ssl.sc.omtrdc.net`   | `True` | 
 | `smetrics.redhat.com.` | `redhat.com.ssl.sc.omtrdc.net`   | `True` | 
 
+# Example Video
+
+[![Video exampling script usage](https://img.youtube.com/vi/lym2KEEcZ4I/0.jpg)](https://www.youtube.com/watch?v=lym2KEEcZ4I "Watch how to use this simple script on any website")
 
 # Issues
 1) Duplicate CNAME Claoking domains will appear
