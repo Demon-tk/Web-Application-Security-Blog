@@ -6,16 +6,18 @@ Insert pcap file as `my_pcap2.pcap` in main directory, or use default pcap file:
 
 # Results
 
-Original Subdomain          |               DNS resolved Domain            | Cloaking                                                      
-============================|==============================================|=========
-<DNS_SCHEME>.URL            |               <DNS_SCHEME>.URL               | Boolean
+| Original Subdomain | DNS resolved Domain   | Cloaking
+| --- | --- | --- |
+| <DNS_SCHEME>.URL | <DNS_SCHEME>.URL   | Boolean | 
+
 
 # Example Output
 
-Original Subdomain          |               DNS resolved Domain            | Cloaking                                                      
-============================|==============================================|=========
-smetrics.redhat.com.        |               redhat.com.ssl.sc.omtrdc.net   | True
-smetrics.redhat.com.        |               redhat.com.ssl.sc.omtrdc.net   | True
+
+| Original Subdomain | DNS resolved Domain   | Cloaking
+| --- | --- | --- |
+| `smetrics.redhat.com.` | `redhat.com.ssl.sc.omtrdc.net`   | `True` | 
+| `smetrics.redhat.com.` | `redhat.com.ssl.sc.omtrdc.net`   | `True` | 
 
 
 # Bugs
