@@ -5,7 +5,6 @@ import re
 import socket
 from queue import Queue
 from threading import Thread
-
 import tldextract
 from scapy.all import *
 
