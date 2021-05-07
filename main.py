@@ -206,7 +206,7 @@ def t_regex(pkt, num):
         if line[0] == '!':
             continue
         else:
-            if type(pkt.rdata) != str:
+            if type(var) != str:
                 var = codecs.decode(var, 'UTF-8')
             test = re.search(line.strip(), var)
             if test:
@@ -250,8 +250,8 @@ def get_results(pos_c_pkt):
     cname_trackers = set()
     for pkt in pos_c_pkt:
         if not pkt.tracking_tp and pkt.tracking_cname:
-            print(
-                "{}, tracking: {} -> {}, tracking: ".format(pkt.rrname, pkt.tracking_tp, pkt.rdata, pkt.tracking_cname))
+            #print(
+            #    "{}, tracking: {} -> {}, tracking: ".format(pkt.rrname, pkt.tracking_tp, pkt.rdata, pkt.tracking_cname))
             cname_trackers.add(pkt)
     return cname_trackers
 
@@ -289,10 +289,6 @@ def init():
     print_pretty(cname_trackers)
 
 
-def main():
+if __name__ == "__main__":
     """We all know what this method does"""
     init()
-
-
-# Run this
-main()
