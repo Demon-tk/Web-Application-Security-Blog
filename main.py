@@ -1,12 +1,9 @@
 import codecs
 import ipaddress
-import logging
-import re
-import socket
 from queue import Queue
-from threading import Thread
 import tldextract
 from scapy.all import *
+from tabulate import tabulate
 
 DNS_PACKETS = set()
 
@@ -250,7 +247,7 @@ def get_results(pos_c_pkt):
     cname_trackers = set()
     for pkt in pos_c_pkt:
         if not pkt.tracking_tp and pkt.tracking_cname:
-            #print(
+            # print(
             #    "{}, tracking: {} -> {}, tracking: ".format(pkt.rrname, pkt.tracking_tp, pkt.rdata, pkt.tracking_cname))
             cname_trackers.add(pkt)
     return cname_trackers
@@ -262,11 +259,11 @@ def print_pretty(cname_trackers):
     :param cname_trackers: The set of CNAME trackers
     :return: None
     """
-    print("Original subdomain             |              DNS Resolved Domain                       | Cloaking")
-    print("===============================|========================================================|=========")
+    headers = ["Original subdomain", "DNS Resolved Domain", "Cloaking"]
+    data = []
     for domain in cname_trackers:
-        print("{}           |              {}             | {}".format(domain.rrname, domain.rdata,
-                                                                       domain.tracking_cname))
+        data.append([domain.rrname, domain.rdata, domain.tracking_cname])
+    print(tabulate(data, headers))
 
 
 def init():
