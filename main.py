@@ -4,6 +4,8 @@ from queue import Queue
 import tldextract
 from scapy.all import *
 from tabulate import tabulate
+import time
+import get_filterlist
 
 DNS_PACKETS = set()
 
@@ -29,11 +31,12 @@ class regexLifter(Thread):
         self.queue = queue
 
     def run(self):
-        pkt = self.queue.get()
-        try:
-            t_regex(pkt, 1)
-        finally:
-            self.queue.task_done()
+        while True:
+            pkt = self.queue.get()
+            try:
+                t_regex(pkt, 1)
+            finally:
+                self.queue.task_done()
 
 
 class regexWorker(Thread):
@@ -43,11 +46,12 @@ class regexWorker(Thread):
         self.queue = queue
 
     def run(self):
-        pkt = self.queue.get()
-        try:
-            t_regex(pkt, 0)
-        finally:
-            self.queue.task_done()
+        while True:
+            pkt = self.queue.get()
+            try:
+                t_regex(pkt, 0)
+            finally:
+                self.queue.task_done()
 
 
 def delegate_ip(ip):
@@ -108,7 +112,6 @@ def summary(pkt):
     :param pkt: The packet to parse
     :return: None
     """
-    # an_records_objects = set()
     count = len(DNS_PACKETS)
     if UDP in pkt:
         # UDP info
@@ -120,14 +123,9 @@ def summary(pkt):
 
             an_record = dns_scheme.an
 
-            # print(dns_scheme.answers)
-
             if an_record is not None:
                 an_fields = an_record.fields
 
-                # print("###############################")
-                # print(an_fields)
-                # print("\n")
                 if an_fields is not None:
                     my_scheme = DNS_SCHEME(count)
                     my_scheme.rrname = codecs.decode(an_fields.get("rrname"), 'UTF-8')
@@ -143,7 +141,7 @@ def summary(pkt):
                             my_scheme.rdata = get_hostname(pos_ip)
                         else:
                             my_scheme.rdata = codecs.decode(pos_ip, 'UTF-8')
-                        # print("Added packet  " + str(count))
+
                         DNS_PACKETS.add(my_scheme)
 
 
@@ -173,10 +171,6 @@ def check_cname_cloaking():
 
                 src_hn = get_domain(pkt.rrname)
                 dst_hn = get_domain(pkt.rdata)
-                """print("{} -> {}".format(pkt.rrname, pkt.rdata))
-                print("{} -> {}".format(src_ip, dst_ip))
-                print("{} -> {}".format(src_hn, dst_hn))
-                print("##########################################################################")"""
                 if src_ip != dst_ip or src_hn != dst_hn:
                     # Cloaking here, check if tracking
                     # print("{} is not the same as {}".format(pkt.rrname, pkt.rdata))
@@ -196,7 +190,7 @@ def t_regex(pkt, num):
     if num == 1:
         var = pkt.rrname
 
-    with open("adguard_regex.txt") as f:
+    with open("adguard_regex_bak.txt") as f:
         lines = f.readlines()
     logging.info("Filtering packet {}".format(var))
     for line in lines:
@@ -271,19 +265,47 @@ def init():
     Sets up the script to work
     :return: None
     """
+    logging.basicConfig(filename='lastrun.log', encoding='utf-8', level=logging.DEBUG)
+
+    o_start = time.time()
     capture = "my_pcap2.pcap"
+
+    one_i = time.time()
     logging.info("Starting to parse packets")
     dns_obj = sniff(offline=capture, prn=summary)
+    one_s = time.time()
+    logging.info("It took {} to parse the packets".format(one_s - one_i))
+
+    # Update filterlist
+    update_i = time.time()
+    get_filterlist.init()
+    update_s = time.time()
+    logging.info("It took {} to update the filterlist".format(update_s - update_i))
+
+    two_i = time.time()
     logging.info("Starting to check for cloaking")
     pos_c_pkt = check_cname_cloaking()
-    logging.info("Starting check for third-part non-cloaking tracking")
+    two_s = time.time()
+    logging.info("It took {} to check for cloaking".format(two_s - two_i))
+
+    three_i = time.time()
+    logging.info("Starting check for third-party non-cloaking tracking")
     check_tracking(pos_c_pkt, 1)
-    logging.info("Starting check for third-part cloaking tracking")
+    three_s = time.time()
+    logging.info("It took {} seconds to check for non-cloaking tracking".format(three_s - three_i))
+
+    four_i = time.time()
+    logging.info("Starting check for third-party cloaking tracking")
     check_tracking(pos_c_pkt, 0)
+    four_s = time.time()
+    logging.info("It tookk {} seconds to check for cloaked tracking".format(four_s - four_i))
+
     logging.info("Done checking for tracking")
     logging.info("Filtering final results")
     cname_trackers = get_results(pos_c_pkt)
     print_pretty(cname_trackers)
+    o_stop = time.time()
+    logging.info("Done! That took a total of {}".format(o_stop - o_start))
 
 
 if __name__ == "__main__":

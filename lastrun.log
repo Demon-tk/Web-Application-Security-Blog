@@ -1,0 +1,477 @@
+INFO:root:Starting to parse packets
+INFO:root:It took 65.473304271698 to parse the packets
+INFO:root:Starting to check for cloaking
+DEBUG:filelock:Attempting to acquire lock 1608290626384 on C:\Users\Nate Mendes\PycharmProjects\WAS_Blog\venv\lib\site-packages\tldextract\.suffix_cache/publicsuffix.org-tlds\de84b5ca2167d4c83e38fb162f2e8738.tldextract.json.lock
+INFO:filelock:Lock 1608290626384 acquired on C:\Users\Nate Mendes\PycharmProjects\WAS_Blog\venv\lib\site-packages\tldextract\.suffix_cache/publicsuffix.org-tlds\de84b5ca2167d4c83e38fb162f2e8738.tldextract.json.lock
+DEBUG:filelock:Attempting to acquire lock 1608332237264 on C:\Users\Nate Mendes\PycharmProjects\WAS_Blog\venv\lib\site-packages\tldextract\.suffix_cache/urls\62bf135d1c2f3d4db4228b9ecaf507a2.tldextract.json.lock
+INFO:filelock:Lock 1608332237264 acquired on C:\Users\Nate Mendes\PycharmProjects\WAS_Blog\venv\lib\site-packages\tldextract\.suffix_cache/urls\62bf135d1c2f3d4db4228b9ecaf507a2.tldextract.json.lock
+DEBUG:filelock:Attempting to release lock 1608332237264 on C:\Users\Nate Mendes\PycharmProjects\WAS_Blog\venv\lib\site-packages\tldextract\.suffix_cache/urls\62bf135d1c2f3d4db4228b9ecaf507a2.tldextract.json.lock
+INFO:filelock:Lock 1608332237264 released on C:\Users\Nate Mendes\PycharmProjects\WAS_Blog\venv\lib\site-packages\tldextract\.suffix_cache/urls\62bf135d1c2f3d4db4228b9ecaf507a2.tldextract.json.lock
+DEBUG:filelock:Attempting to release lock 1608290626384 on C:\Users\Nate Mendes\PycharmProjects\WAS_Blog\venv\lib\site-packages\tldextract\.suffix_cache/publicsuffix.org-tlds\de84b5ca2167d4c83e38fb162f2e8738.tldextract.json.lock
+INFO:filelock:Lock 1608290626384 released on C:\Users\Nate Mendes\PycharmProjects\WAS_Blog\venv\lib\site-packages\tldextract\.suffix_cache/publicsuffix.org-tlds\de84b5ca2167d4c83e38fb162f2e8738.tldextract.json.lock
+INFO:root:It took 1.6844639778137207 to check for cloaking
+INFO:root:Starting check for third-party non-cloaking tracking
+INFO:root:Queueing 39
+INFO:root:Queueing 67
+INFO:root:Queueing 6
+INFO:root:Queueing 38
+INFO:root:Queueing 86
+INFO:root:Queueing 90
+INFO:root:Queueing 12
+INFO:root:Queueing 91
+INFO:root:Queueing 96
+INFO:root:Queueing 46
+INFO:root:Queueing 19
+INFO:root:Queueing 54
+INFO:root:Queueing 77
+INFO:root:Queueing 14
+INFO:root:Queueing 78
+INFO:root:Filtering packet assets.adobedtm.com.
+INFO:root:Filtering packet js.driftt.com.
+INFO:root:Queueing 47
+INFO:root:Filtering packet presence.api.drift.com.
+INFO:root:Filtering packet match.adsrvr.org.
+INFO:root:Queueing 13
+INFO:root:Filtering packet match.adsrvr.org.
+INFO:root:Filtering packet event.api.drift.com.
+INFO:root:Filtering packet smartscreen-prod.microsoft.com.
+INFO:root:Filtering packet event.api.drift.com.
+INFO:root:Done with 12
+INFO:root:Found tracking match for match.adsrvr.org.
+INFO:root:Filtering packet driftt.imgix.net.
+INFO:root:Queueing 48
+INFO:root:Filtering packet 10727170.fls.doubleclick.net.
+INFO:root:Found tracking match for match.adsrvr.org.
+INFO:root:Filtering packet in.hotjar.com.
+INFO:root:Filtering packet platform.twitter.com.
+INFO:root:Done with 67
+INFO:root:Filtering packet b.6sc.co.
+INFO:root:Done with 86
+INFO:root:Filtering packet access.redhat.com.
+INFO:root:Filtering packet b.6sc.co.
+INFO:root:Filtering packet www.googletagmanager.com.
+INFO:root:Done with 38
+INFO:root:Done with 90
+INFO:root:Done with 6
+INFO:root:Queueing 94
+INFO:root:Done with 91
+INFO:root:Filtering packet access.redhat.com.
+INFO:root:Done with 39
+INFO:root:Found tracking match for 10727170.fls.doubleclick.net.
+INFO:root:Done with 96
+INFO:root:Found tracking match for in.hotjar.com.
+INFO:root:Found tracking match for b.6sc.co.
+INFO:root:Done with 19
+INFO:root:Found tracking match for b.6sc.co.
+INFO:root:Filtering packet dpm.demdex.net.
+INFO:root:Done with 14
+INFO:root:Done with 47
+INFO:root:Queueing 7
+INFO:root:Done with 54
+INFO:root:Done with 46
+INFO:root:Done with 13
+INFO:root:Done with 78
+INFO:root:Done with 77
+INFO:root:Filtering packet flow.api.drift.com.
+INFO:root:Found tracking match for dpm.demdex.net.
+INFO:root:Queueing 18
+INFO:root:Done with 48
+INFO:root:Queueing 28
+INFO:root:Filtering packet www.bing.com.
+INFO:root:Queueing 68
+INFO:root:Done with 94
+INFO:root:Queueing 3
+INFO:root:Queueing 95
+INFO:root:Queueing 49
+INFO:root:Queueing 4
+INFO:root:Queueing 63
+INFO:root:Queueing 50
+INFO:root:Done with 7
+INFO:root:Queueing 32
+INFO:root:Filtering packet snap.licdn.com.
+INFO:root:Queueing 80
+INFO:root:Filtering packet j.6sc.co.
+INFO:root:Queueing 83
+INFO:root:Filtering packet pixel.mintigo.com.
+INFO:root:Found tracking match for j.6sc.co.
+INFO:root:Queueing 20
+INFO:root:Filtering packet dpm.demdex.net.
+INFO:root:Filtering packet driftt.imgix.net.
+INFO:root:Done with 18
+INFO:root:Done with 68
+INFO:root:Filtering packet www.redhat.com.
+INFO:root:Filtering packet www.redhat.com.
+INFO:root:Queueing 62
+INFO:root:Filtering packet analytics.twitter.com.
+INFO:root:Filtering packet insight.adsrvr.org.
+INFO:root:Filtering packet metrics.api.drift.com.
+INFO:root:Found tracking match for dpm.demdex.net.
+INFO:root:Done with 28
+INFO:root:Filtering packet 1039909-9.chat.api.drift.com.
+INFO:root:Filtering packet static.hotjar.com.
+INFO:root:Done with 95
+INFO:root:Queueing 98
+INFO:root:Done with 3
+INFO:root:Filtering packet platform.twitter.com.
+INFO:root:Done with 4
+INFO:root:Found tracking match for insight.adsrvr.org.
+INFO:root:Done with 49
+INFO:root:Done with 50
+INFO:root:Filtering packet insight.adsrvr.org.
+INFO:root:Done with 80
+INFO:root:Found tracking match for static.hotjar.com.
+INFO:root:Queueing 21
+INFO:root:Done with 83
+INFO:root:Done with 63
+INFO:root:Done with 20
+INFO:root:Found tracking match for insight.adsrvr.org.
+INFO:root:Filtering packet fonts.gstatic.com.
+INFO:root:Done with 32
+INFO:root:Queueing 69
+INFO:root:Done with 62
+INFO:root:Queueing 25
+INFO:root:Filtering packet connect.facebook.net.
+INFO:root:Queueing 29
+INFO:root:Done with 98
+INFO:root:Queueing 9
+INFO:root:Queueing 24
+INFO:root:Queueing 55
+INFO:root:Queueing 31
+INFO:root:Done with 21
+INFO:root:Queueing 71
+INFO:root:Filtering packet js.driftt.com.
+INFO:root:Queueing 84
+INFO:root:Filtering packet static.hotjar.com.
+INFO:root:Queueing 72
+INFO:root:Filtering packet bat.bing.com.
+INFO:root:Queueing 11
+INFO:root:Done with 69
+INFO:root:Found tracking match for static.hotjar.com.
+INFO:root:Filtering packet static.redhat.com.
+INFO:root:Filtering packet static.ads-twitter.com.
+INFO:root:Queueing 75
+INFO:root:Filtering packet pixel.mintigo.com.
+INFO:root:Filtering packet 10727170.fls.doubleclick.net.
+INFO:root:Filtering packet smetrics.redhat.com.
+INFO:root:Done with 25
+INFO:root:Filtering packet presence.api.drift.com.
+INFO:root:Done with 29
+INFO:root:Queueing 22
+INFO:root:Filtering packet assets.adobedtm.com.
+INFO:root:Filtering packet smetrics.redhat.com.
+INFO:root:Found tracking match for 10727170.fls.doubleclick.net.
+INFO:root:Done with 9
+INFO:root:Done with 24
+INFO:root:Done with 31
+INFO:root:Queueing 26
+INFO:root:Done with 71
+INFO:root:Filtering packet secure.adnxs.com.
+INFO:root:Done with 84
+INFO:root:Done with 55
+INFO:root:Done with 11
+INFO:root:Done with 72
+INFO:root:Queueing 15
+INFO:root:Filtering packet connect.facebook.net.
+INFO:root:Done with 75
+INFO:root:Queueing 8
+INFO:root:Filtering packet static.ads-twitter.com.
+INFO:root:Queueing 70
+INFO:root:Done with 22
+INFO:root:Queueing 30
+INFO:root:Queueing 52
+INFO:root:Queueing 81
+INFO:root:Queueing 23
+INFO:root:Queueing 33
+INFO:root:Queueing 97
+INFO:root:Queueing 1
+INFO:root:Done with 26
+INFO:root:Filtering packet img.en25.com.
+INFO:root:Queueing 64
+INFO:root:Filtering packet static.redhat.com.
+INFO:root:Queueing 85
+INFO:root:Filtering packet j.6sc.co.
+INFO:root:Filtering packet analytics.twitter.com.
+INFO:root:Queueing 73
+INFO:root:Done with 15
+INFO:root:Filtering packet metrics.api.drift.com.
+INFO:root:Filtering packet bat.bing.com.
+INFO:root:Found tracking match for j.6sc.co.
+INFO:root:Filtering packet fonts.gstatic.com.
+INFO:root:Filtering packet nav.smartscreen.microsoft.com.
+INFO:root:Done with 8
+INFO:root:Filtering packet snap.licdn.com.
+INFO:root:Filtering packet static.hotjar.com.
+INFO:root:Queueing 2
+INFO:root:Done with 70
+INFO:root:Done with 52
+INFO:root:Filtering packet ups.analytics.yahoo.com.
+INFO:root:Filtering packet 1039909-9.chat.api.drift.com.
+INFO:root:Done with 81
+INFO:root:Done with 30
+INFO:root:Filtering packet c.6sc.co.
+INFO:root:Done with 97
+INFO:root:Done with 1
+INFO:root:Done with 23
+INFO:root:Queueing 45
+INFO:root:Found tracking match for static.hotjar.com.
+INFO:root:Found tracking match for c.6sc.co.
+INFO:root:Done with 64
+INFO:root:Done with 85
+INFO:root:Filtering packet nav.smartscreen.microsoft.com.
+INFO:root:Queueing 74
+INFO:root:Done with 33
+INFO:root:Done with 73
+INFO:root:Queueing 16
+INFO:root:Done with 2
+INFO:root:Filtering packet in.hotjar.com.
+INFO:root:Queueing 93
+INFO:root:Queueing 65
+INFO:root:Queueing 5
+INFO:root:Found tracking match for in.hotjar.com.
+INFO:root:Done with 45
+INFO:root:Filtering packet c.6sc.co.
+INFO:root:Found tracking match for c.6sc.co.
+INFO:root:Done with 74
+INFO:root:Filtering packet img.en25.com.
+INFO:root:Filtering packet flow.api.drift.com.
+INFO:root:Filtering packet ups.analytics.yahoo.com.
+INFO:root:Done with 16
+INFO:root:Done with 65
+INFO:root:Filtering packet smartscreen-prod.microsoft.com.
+INFO:root:Done with 93
+INFO:root:Done with 5
+INFO:root:Done
+INFO:root:It took 8.070419549942017 seconds to check for non-cloaking tracking
+INFO:root:Starting check for third-party cloaking tracking
+INFO:root:Queueing 39
+INFO:root:Queueing 67
+INFO:root:Queueing 6
+INFO:root:Queueing 38
+INFO:root:Queueing 86
+INFO:root:Queueing 90
+INFO:root:Queueing 12
+INFO:root:Queueing 91
+INFO:root:Queueing 96
+INFO:root:Queueing 46
+INFO:root:Queueing 19
+INFO:root:Queueing 54
+INFO:root:Queueing 77
+INFO:root:Queueing 14
+INFO:root:Queueing 78
+INFO:root:Queueing 47
+INFO:root:Queueing 13
+INFO:root:Filtering packet wd-prod-ss.trafficmanager.net.
+INFO:root:Filtering packet match-975362022.us-east-1.elb.amazonaws.com.
+INFO:root:Queueing 48
+INFO:root:Filtering packet dualstack.com.imgix.map.fastly.net.
+INFO:root:Filtering packet dl7g9llrghqi1.cloudfront.net.
+INFO:root:Filtering packet cn-assets.adobedtm.com.edgekey.net.
+INFO:root:Filtering packet match-975362022.us-east-1.elb.amazonaws.com.
+INFO:root:Filtering packet alb-event-1454785217.us-east-1.elb.amazonaws.com.
+INFO:root:Queueing 94
+INFO:root:Filtering packet a2f905133e04e4d35ade9cd4751dd35b-4fd69d4b6621dbbd.elb.us-east-1.amazonaws.com.
+INFO:root:Filtering packet alb-event-1454785217.us-east-1.elb.amazonaws.com.
+INFO:root:Filtering packet in-live.live.eks.hotjar.com.
+INFO:root:Filtering packet access-chinacdn.redhat.com.edgekey.net.
+INFO:root:Done with 6
+INFO:root:Filtering packet cs472.wac.edgecastcdn.net.
+INFO:root:Filtering packet access-chinacdn.redhat.com.edgekey.net.
+INFO:root:Filtering packet b.6sc.co.edgekey.net.
+INFO:root:Queueing 7
+INFO:root:Filtering packet b.6sc.co.edgekey.net.
+INFO:root:Done with 39
+INFO:root:Done with 90
+INFO:root:Done with 67
+INFO:root:Done with 38
+INFO:root:Done with 86
+INFO:root:Filtering packet dart.l.doubleclick.net.
+INFO:root:Done with 12
+INFO:root:Filtering packet www-googletagmanager.l.google.com.
+INFO:root:Found tracking match for in-live.live.eks.hotjar.com.
+INFO:root:Done with 96
+INFO:root:Done with 91
+INFO:root:Done with 14
+INFO:root:Filtering packet gslb-2.demdex.net.
+INFO:root:Queueing 18
+INFO:root:Filtering packet afe79c04fd8464db69f453355c110684-6aa967fe209738b1.elb.us-east-1.amazonaws.com.
+INFO:root:Found tracking match for b.6sc.co.edgekey.net.
+INFO:root:Done with 13
+INFO:root:Done with 19
+INFO:root:Found tracking match for b.6sc.co.edgekey.net.
+INFO:root:Found tracking match for dart.l.doubleclick.net.
+INFO:root:Done with 46
+INFO:root:Filtering packet a-0001.a-afdentry.net.trafficmanager.net.
+INFO:root:Done with 47
+INFO:root:Queueing 28
+INFO:root:Found tracking match for gslb-2.demdex.net.
+INFO:root:Done with 77
+INFO:root:Done with 94
+INFO:root:Done with 78
+INFO:root:Done with 54
+INFO:root:Filtering packet wildcard.licdn.com.edgekey.net.
+INFO:root:Queueing 68
+INFO:root:Done with 7
+INFO:root:Done with 48
+INFO:root:Queueing 3
+INFO:root:Filtering packet d3og8oacmcejif.cloudfront.net.
+INFO:root:Queueing 95
+INFO:root:Done with 18
+INFO:root:Queueing 49
+INFO:root:Queueing 4
+INFO:root:Queueing 63
+INFO:root:Queueing 50
+INFO:root:Queueing 32
+INFO:root:Queueing 80
+INFO:root:Queueing 83
+INFO:root:Queueing 20
+INFO:root:Queueing 62
+INFO:root:Queueing 98
+INFO:root:Done with 28
+INFO:root:Queueing 21
+INFO:root:Filtering packet j.6sc.co.edgekey.net.
+INFO:root:Queueing 69
+INFO:root:Filtering packet gslb-2.demdex.net.
+INFO:root:Filtering packet dualstack.com.imgix.map.fastly.net.
+INFO:root:Filtering packet ds-www.redhat.com.edgekey.net.
+INFO:root:Found tracking match for j.6sc.co.edgekey.net.
+INFO:root:Queueing 25
+INFO:root:Filtering packet b'ads.twitter.com.'
+INFO:root:Filtering packet cs472.wac.edgecastcdn.net.
+INFO:root:Filtering packet ds-www.redhat.com.edgekey.net.
+INFO:root:Found tracking match for gslb-2.demdex.net.
+INFO:root:Filtering packet insight-760077375.us-east-1.elb.amazonaws.com.
+INFO:root:Filtering packet insight-760077375.us-east-1.elb.amazonaws.com.
+INFO:root:Done with 68
+INFO:root:Filtering packet scontent.xx.fbcdn.net.
+INFO:root:Queueing 29
+INFO:root:Filtering packet static-cdn.hotjar.com.
+INFO:root:Filtering packet afe79c04fd8464db69f453355c110684-6aa967fe209738b1.elb.us-east-1.amazonaws.com.
+INFO:root:Done with 3
+INFO:root:Done with 95
+INFO:root:Filtering packet gstaticadssl.l.google.com.
+INFO:root:Filtering packet ee15ba61-wschat-wschatalb-6fcf-2062696737.us-east-1.elb.amazonaws.com.
+INFO:root:Done with 50
+INFO:root:Done with 49
+INFO:root:Done with 20
+INFO:root:Filtering packet dl7g9llrghqi1.cloudfront.net.
+INFO:root:Done with 4
+INFO:root:Queueing 9
+INFO:root:Done with 62
+INFO:root:Filtering packet static-cdn.hotjar.com.
+INFO:root:Found tracking match for static-cdn.hotjar.com.
+INFO:root:Done with 21
+INFO:root:Done with 63
+INFO:root:Done with 80
+INFO:root:Done with 98
+INFO:root:Done with 83
+INFO:root:Filtering packet bat-bing-com.a-0001.a-msedge.net.
+INFO:root:Queueing 24
+INFO:root:Done with 69
+INFO:root:Done with 32
+INFO:root:Found tracking match for static-cdn.hotjar.com.
+INFO:root:Filtering packet static.redhat.com.edgekey.net.
+INFO:root:Queueing 55
+INFO:root:Done with 25
+INFO:root:Done with 29
+INFO:root:Queueing 31
+INFO:root:Queueing 71
+INFO:root:Done with 9
+INFO:root:Filtering packet platform.twitter.map.fastly.net.
+INFO:root:Queueing 84
+INFO:root:Queueing 72
+INFO:root:Queueing 11
+INFO:root:Queueing 75
+INFO:root:Queueing 22
+INFO:root:Queueing 26
+INFO:root:Queueing 15
+INFO:root:Queueing 8
+INFO:root:Queueing 70
+INFO:root:Filtering packet dart.l.doubleclick.net.
+INFO:root:Queueing 30
+INFO:root:Done with 24
+INFO:root:Queueing 52
+INFO:root:Filtering packet cn-assets.adobedtm.com.edgekey.net.
+INFO:root:Filtering packet redhat.com.ssl.sc.omtrdc.net.
+INFO:root:Found tracking match for dart.l.doubleclick.net.
+INFO:root:Filtering packet d3og8oacmcejif.cloudfront.net.
+INFO:root:Queueing 81
+INFO:root:Filtering packet g.geogslb.com.
+INFO:root:Filtering packet a2f905133e04e4d35ade9cd4751dd35b-4fd69d4b6621dbbd.elb.us-east-1.amazonaws.com.
+INFO:root:Filtering packet redhat.com.ssl.sc.omtrdc.net.
+INFO:root:Filtering packet platform.twitter.map.fastly.net.
+INFO:root:Filtering packet scontent.xx.fbcdn.net.
+INFO:root:Filtering packet wildcard.en25.com.edgekey.net.
+INFO:root:Done with 55
+INFO:root:Filtering packet static.redhat.com.edgekey.net.
+INFO:root:Done with 11
+INFO:root:Found tracking match for redhat.com.ssl.sc.omtrdc.net.
+INFO:root:Filtering packet j.6sc.co.edgekey.net.
+INFO:root:Queueing 23
+INFO:root:Filtering packet bat-bing-com.a-0001.a-msedge.net.
+INFO:root:Filtering packet b'ads.twitter.com.'
+INFO:root:Done with 31
+INFO:root:Done with 75
+INFO:root:Done with 84
+INFO:root:Filtering packet afe79c04fd8464db69f453355c110684-6aa967fe209738b1.elb.us-east-1.amazonaws.com.
+INFO:root:Done with 22
+INFO:root:Found tracking match for redhat.com.ssl.sc.omtrdc.net.
+INFO:root:Done with 71
+INFO:root:Done with 26
+INFO:root:Done with 15
+INFO:root:Found tracking match for j.6sc.co.edgekey.net.
+INFO:root:Queueing 33
+INFO:root:Done with 8
+INFO:root:Done with 30
+INFO:root:Done with 52
+INFO:root:Done with 72
+INFO:root:Filtering packet wildcard.licdn.com.edgekey.net.
+INFO:root:Done with 81
+INFO:root:Done with 70
+INFO:root:Queueing 97
+INFO:root:Queueing 1
+INFO:root:Queueing 64
+INFO:root:Done with 23
+INFO:root:Queueing 85
+INFO:root:Filtering packet static-cdn.hotjar.com.
+INFO:root:Queueing 73
+INFO:root:Found tracking match for static-cdn.hotjar.com.
+INFO:root:Queueing 2
+INFO:root:Done with 33
+INFO:root:Filtering packet gstaticadssl.l.google.com.
+INFO:root:Queueing 45
+INFO:root:Filtering packet wd-prod-ss.trafficmanager.net.
+INFO:root:Filtering packet prod.ups-ats.aolp-ds-prd.aws.oath.cloud.
+INFO:root:Queueing 74
+INFO:root:Filtering packet ee15ba61-wschat-wschatalb-6fcf-2062696737.us-east-1.elb.amazonaws.com.
+INFO:root:Done with 97
+INFO:root:Filtering packet c.6sc.co.edgekey.net.
+INFO:root:Queueing 16
+INFO:root:Done with 1
+INFO:root:Filtering packet wd-prod-ss.trafficmanager.net.
+INFO:root:Done with 64
+INFO:root:Queueing 93
+INFO:root:Found tracking match for c.6sc.co.edgekey.net.
+INFO:root:Filtering packet in-live.live.eks.hotjar.com.
+INFO:root:Done with 85
+INFO:root:Filtering packet c.6sc.co.edgekey.net.
+INFO:root:Queueing 65
+INFO:root:Done with 73
+INFO:root:Done with 2
+INFO:root:Found tracking match for in-live.live.eks.hotjar.com.
+INFO:root:Filtering packet wildcard.en25.com.edgekey.net.
+INFO:root:Found tracking match for c.6sc.co.edgekey.net.
+INFO:root:Queueing 5
+INFO:root:Done with 45
+INFO:root:Done with 74
+INFO:root:Filtering packet afe79c04fd8464db69f453355c110684-6aa967fe209738b1.elb.us-east-1.amazonaws.com.
+INFO:root:Done with 16
+INFO:root:Filtering packet prod.ups-ats.aolp-ds-prd.aws.oath.cloud.
+INFO:root:Done with 93
+INFO:root:Done with 65
+INFO:root:Filtering packet wd-prod-ss.trafficmanager.net.
+INFO:root:Done with 5
+INFO:root:Done
+INFO:root:It tookk 8.571081638336182 seconds to check for cloaked tracking
+INFO:root:Done checking for tracking
+INFO:root:Filtering final results
+INFO:root:Done! That took a total of 83.79926943778992
