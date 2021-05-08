@@ -1,3 +1,4 @@
+import logging
 from threading import Thread
 import requests
 import os
@@ -63,11 +64,14 @@ def regexer(line):
 
 
 def download_filterlist():
-    r = requests.get(
-        "https://raw.githubusercontent.com/AdguardTeam/AdguardFilters/master/SpywareFilter/sections/tracking_servers.txt")
-    os.path.join(os.getcwd(), 'adguard_default.txt')
-    f = open('adguard_default.txt', 'w')
-    f.write(codecs.decode(r.content, 'utf-8'))
+    try:
+        r = requests.get(
+            "https://raw.githubusercontent.com/AdguardTeam/AdguardFilters/master/SpywareFilter/sections/tracking_servers.txt")
+        os.path.join(os.getcwd(), 'adguard_default.txt')
+        f = open('adguard_default.txt', 'w')
+        f.write(codecs.decode(r.content, 'utf-8'))
+    except:
+        logging.WARN("Unable to update filterlist, using local version")
 
 
 def convert_to_regex():
