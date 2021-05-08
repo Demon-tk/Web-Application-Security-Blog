@@ -1,5 +1,6 @@
 import codecs
 import ipaddress
+import logging
 from queue import Queue
 import tldextract
 from scapy.all import *
@@ -10,10 +11,10 @@ import get_filterlist
 DNS_PACKETS = set()
 
 
-class DNS_SCHEME:
+class DnsScheme:
     # Used to keep DNS data organized
-    def __init__(self, id):
-        self.id = id
+    def __init__(self, workerid):
+        self.id = workerid
         self.rrname = None
         self.type = None
         self.rclass = None
@@ -103,7 +104,7 @@ def get_hostname(ip):
     try:
         return socket.getfqdn(ip)
     except:
-        pass
+        logging.WARN("Could not seem to get the FQDN for {}".format(ip))
 
 
 def summary(pkt):
@@ -127,7 +128,7 @@ def summary(pkt):
                 an_fields = an_record.fields
 
                 if an_fields is not None:
-                    my_scheme = DNS_SCHEME(count)
+                    my_scheme = DnsScheme(count)
                     my_scheme.rrname = codecs.decode(an_fields.get("rrname"), 'UTF-8')
                     my_scheme.type = an_fields.get("type")
                     my_scheme.rclass = an_fields.get("rclass")
@@ -185,14 +186,17 @@ def t_regex(pkt, num):
     :param num: To scan the origin or destination host
     :return: None
     """
+    var = -1
     if num == 0:
         var = pkt.rdata
     if num == 1:
         var = pkt.rrname
+    else:
+        logging.error("Packet {} should have a worker number assigned but it has this {}".format(pkt.id, num))
 
     with open("resources/adguard_regex_bak.txt") as f:
         lines = f.readlines()
-    logging.info("Filtering packet {}".format(var))
+    logging.debug("Filtering packet {}".format(var))
     for line in lines:
         if line[0] == '!':
             continue
@@ -201,13 +205,13 @@ def t_regex(pkt, num):
                 var = codecs.decode(var, 'UTF-8')
             test = re.search(line.strip(), var)
             if test:
-                logging.info("Found tracking match for {}".format(var))
+                logging.debug("Found tracking match for {}".format(var))
                 if num == 1:
                     pkt.tracking_tp = True
                 if num == 0:
                     pkt.tracking_cname = True
                 break
-    logging.info("Done with {}".format(pkt.id))
+    logging.debug("Done with {}".format(pkt.id))
 
 
 def check_tracking(pos_c_pkt, num):
@@ -219,17 +223,20 @@ def check_tracking(pos_c_pkt, num):
     """
     queue = Queue()
     for x in range(200):
+        worker = ''
         if num == 0:
             worker = regexWorker(queue)
         if num == 1:
             worker = regexLifter(queue)
+        else:
+            logging.error("Packets should have a worker number assigned but it has this {}".format(num))
         worker.daemon = True
         worker.start()
     for pkt in pos_c_pkt:
-        logging.info("Queueing {}".format(pkt.id))
+        logging.debug("Queueing {}".format(pkt.id))
         queue.put(pkt)
     queue.join()
-    logging.info("Done")
+    logging.debug("Done")
 
 
 def get_results(pos_c_pkt):
@@ -241,8 +248,6 @@ def get_results(pos_c_pkt):
     cname_trackers = set()
     for pkt in pos_c_pkt:
         if not pkt.tracking_tp and pkt.tracking_cname:
-            # print(
-            #    "{}, tracking: {} -> {}, tracking: ".format(pkt.rrname, pkt.tracking_tp, pkt.rdata, pkt.tracking_cname))
             cname_trackers.add(pkt)
     return cname_trackers
 
@@ -265,14 +270,14 @@ def init():
     Sets up the script to work
     :return: None
     """
-    logging.basicConfig(filename='resources/lastrun.log', encoding='utf-8', level=logging.DEBUG)
+    logging.basicConfig(filename='resources/lastrun.log', encoding='utf-8', level=logging.INFO)
 
     o_start = time.time()
-    capture = "my_pcap2.pcap"
+    capture = "resources/my_pcap2.pcap"
 
     one_i = time.time()
     logging.info("Starting to parse packets")
-    dns_obj = sniff(offline=capture, prn=summary)
+    sniff(offline=capture, prn=summary)
     one_s = time.time()
     logging.info("It took {} to parse the packets".format(one_s - one_i))
 
@@ -298,7 +303,7 @@ def init():
     logging.info("Starting check for third-party cloaking tracking")
     check_tracking(pos_c_pkt, 0)
     four_s = time.time()
-    logging.info("It tookk {} seconds to check for cloaked tracking".format(four_s - four_i))
+    logging.info("It took {} seconds to check for cloaked tracking".format(four_s - four_i))
 
     logging.info("Done checking for tracking")
     logging.info("Filtering final results")
