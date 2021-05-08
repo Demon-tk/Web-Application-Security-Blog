@@ -25,6 +25,21 @@ class DnsScheme:
         self.tracking_tp = False
 
 
+class hostnameWorker(Thread):
+    # Used as a thread worker for finding if the first part domain is a tracking domain
+    def __init__(self, queue):
+        Thread.__init__(self)
+        self.queue = queue
+
+    def run(self):
+        while True:
+            pkt = self.queue.get()
+            try:
+                resolve_rdata(pkt)
+            finally:
+                self.queue.task_done()
+
+
 class regexLifter(Thread):
     # Used as a thread worker for finding if the first part domain is a tracking domain
     def __init__(self, queue):
@@ -134,16 +149,31 @@ def summary(pkt):
                     my_scheme.rclass = an_fields.get("rclass")
                     my_scheme.ttl = an_fields.get("ttl")
                     my_scheme.rdlen = an_fields.get("rlen")
+                    my_scheme.rdata = an_fields.get("rdata")
+                    DNS_PACKETS.add(my_scheme)
 
-                    # Check ip or hostname or none
-                    pos_ip = an_fields.get("rdata")
-                    if pos_ip is not None:
-                        if delegate_ip(pos_ip):
-                            my_scheme.rdata = get_hostname(pos_ip)
-                        else:
-                            my_scheme.rdata = codecs.decode(pos_ip, 'UTF-8')
 
-                        DNS_PACKETS.add(my_scheme)
+def resolve_rdata(pkt):
+    pos_ip = pkt.rdata
+    if pos_ip is not None:
+        if delegate_ip(pos_ip):
+            pkt.rdata = get_hostname(pos_ip)
+        else:
+            pkt.rdata = codecs.decode(pos_ip, 'UTF-8')
+
+
+def hostname_queue():
+    queue = Queue()
+    for x in range(200):
+        worker = ''
+        worker = hostnameWorker(queue)
+        worker.daemon = True
+        worker.start()
+    for pkt in DNS_PACKETS:
+        logging.debug("Queueing {}".format(pkt.id))
+        queue.put(pkt)
+    queue.join()
+    logging.debug("Done Queueing")
 
 
 def get_domain(hostname):
@@ -187,9 +217,9 @@ def t_regex(pkt, num):
     :return: None
     """
     var = -1
-    if num == 0:
+    if int(num) == 0:
         var = pkt.rdata
-    if num == 1:
+    if int(num) == 1:
         var = pkt.rrname
     else:
         logging.error("Packet {} should have a worker number assigned but it has this {}".format(pkt.id, num))
@@ -224,9 +254,9 @@ def check_tracking(pos_c_pkt, num):
     queue = Queue()
     for x in range(200):
         worker = ''
-        if num == 0:
+        if int(num) == 0:
             worker = regexWorker(queue)
-        if num == 1:
+        if int(num) == 1:
             worker = regexLifter(queue)
         else:
             logging.error("Packets should have a worker number assigned but it has this {}".format(num))
@@ -270,7 +300,8 @@ def init():
     Sets up the script to work
     :return: None
     """
-    logging.basicConfig(filename='resources/lastrun.log', encoding='utf-8', level=logging.INFO)
+    logging.basicConfig(filename='resources/lastrun.log', encoding='utf-8', datefmt='%m/%d/%Y %I:%M:%S %p',
+                        filemode='w+', level=logging.INFO)
 
     o_start = time.time()
     capture = "resources/my_pcap2.pcap"
@@ -278,6 +309,7 @@ def init():
     one_i = time.time()
     logging.info("Starting to parse packets")
     sniff(offline=capture, prn=summary)
+    hostname_queue()
     one_s = time.time()
     logging.info("It took {} to parse the packets".format(one_s - one_i))
 
