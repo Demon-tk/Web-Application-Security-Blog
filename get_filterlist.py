@@ -67,15 +67,15 @@ def download_filterlist():
     try:
         r = requests.get(
             "https://raw.githubusercontent.com/AdguardTeam/AdguardFilters/master/SpywareFilter/sections/tracking_servers.txt")
-        os.path.join(os.getcwd(), 'adguard_default.txt')
-        f = open('adguard_default.txt', 'w')
+        os.path.join(os.getcwd(), 'resources/adguard_default.txt')
+        f = open('resources/adguard_default.txt', 'w')
         f.write(codecs.decode(r.content, 'utf-8'))
     except:
         logging.WARN("Unable to update filterlist, using local version")
 
 
 def convert_to_regex():
-    with open('adguard_default.txt', 'r') as base:
+    with open('resources/adguard_default.txt', 'r') as base:
         lines = base.readlines()
     # threading here
     queue = Queue()
@@ -90,7 +90,7 @@ def convert_to_regex():
 
 
 def make_new():
-    with open('adguard_regex.txt', 'w') as f:
+    with open('resources/adguard_regex.txt', 'w') as f:
         for myLine in mySet:
             form = myLine.form
             if len(form) > 1:

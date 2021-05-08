@@ -190,7 +190,7 @@ def t_regex(pkt, num):
     if num == 1:
         var = pkt.rrname
 
-    with open("adguard_regex_bak.txt") as f:
+    with open("resources/adguard_regex_bak.txt") as f:
         lines = f.readlines()
     logging.info("Filtering packet {}".format(var))
     for line in lines:
@@ -265,7 +265,7 @@ def init():
     Sets up the script to work
     :return: None
     """
-    logging.basicConfig(filename='lastrun.log', encoding='utf-8', level=logging.DEBUG)
+    logging.basicConfig(filename='resources/lastrun.log', encoding='utf-8', level=logging.DEBUG)
 
     o_start = time.time()
     capture = "my_pcap2.pcap"
