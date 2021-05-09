@@ -78,10 +78,7 @@ def delegate_ip(ip):
     """
     if check_if_valid_ipv4(ip):
         return True
-    if check_if_valid_ipv6(ip):
-        return True
-    else:
-        return False
+    return bool(check_if_valid_ipv6(ip))
 
 
 def check_if_valid_ipv4(pos_ip):
@@ -128,29 +125,34 @@ def summary(pkt):
     :param pkt: The packet to parse
     :return: None
     """
+    if UDP not in pkt:
+        return
+    # UDP info
+    udp_sport = pkt[UDP].sport
+    udp_dport = pkt[UDP].dport
+
+    if int(udp_sport) == 53 or int(udp_dport == 53):
+        dns_scheme = pkt[DNS]
+
+        an_record = dns_scheme.an
+
+        if an_record is not None:
+            an_fields = an_record.fields
+
+            if an_fields is not None:
+                _extracted_from_summary_3(an_fields)
+
+
+def _extracted_from_summary_3(an_fields):
     count = len(DNS_PACKETS)
-    if UDP in pkt:
-        # UDP info
-        udp_sport = pkt[UDP].sport
-        udp_dport = pkt[UDP].dport
-
-        if int(udp_sport) == 53 or int(udp_dport == 53):
-            dns_scheme = pkt[DNS]
-
-            an_record = dns_scheme.an
-
-            if an_record is not None:
-                an_fields = an_record.fields
-
-                if an_fields is not None:
-                    my_scheme = DnsScheme(count)
-                    my_scheme.rrname = codecs.decode(an_fields.get("rrname"), 'UTF-8')
-                    my_scheme.type = an_fields.get("type")
-                    my_scheme.rclass = an_fields.get("rclass")
-                    my_scheme.ttl = an_fields.get("ttl")
-                    my_scheme.rdlen = an_fields.get("rlen")
-                    my_scheme.rdata = an_fields.get("rdata")
-                    DNS_PACKETS.add(my_scheme)
+    my_scheme = DnsScheme(count)
+    my_scheme.rrname = codecs.decode(an_fields.get("rrname"), 'UTF-8')
+    my_scheme.type = an_fields.get("type")
+    my_scheme.rclass = an_fields.get("rclass")
+    my_scheme.ttl = an_fields.get("ttl")
+    my_scheme.rdlen = an_fields.get("rlen")
+    my_scheme.rdata = an_fields.get("rdata")
+    DNS_PACKETS.add(my_scheme)
 
 
 def resolve_rdata(pkt):
@@ -164,7 +166,7 @@ def resolve_rdata(pkt):
 
 def hostname_queue():
     queue = Queue()
-    for x in range(200):
+    for _ in range(200):
         worker = ''
         worker = hostnameWorker(queue)
         worker.daemon = True
@@ -193,19 +195,17 @@ def check_cname_cloaking():
     """
     my_local_set = set()
     for pkt in DNS_PACKETS:
-        if int(pkt.type) == 5:
+        if int(pkt.type) == 5 and pkt.rdata is not None:
 
-            if pkt.rdata is not None:
+            src_ip = socket.gethostbyname(pkt.rrname)
+            dst_ip = socket.gethostbyname(pkt.rdata)
 
-                src_ip = socket.gethostbyname(pkt.rrname)
-                dst_ip = socket.gethostbyname(pkt.rdata)
-
-                src_hn = get_domain(pkt.rrname)
-                dst_hn = get_domain(pkt.rdata)
-                if src_ip != dst_ip or src_hn != dst_hn:
-                    # Cloaking here, check if tracking
-                    # print("{} is not the same as {}".format(pkt.rrname, pkt.rdata))
-                    my_local_set.add(pkt)
+            src_hn = get_domain(pkt.rrname)
+            dst_hn = get_domain(pkt.rdata)
+            if src_ip != dst_ip or src_hn != dst_hn:
+                # Cloaking here, check if tracking
+                # print("{} is not the same as {}".format(pkt.rrname, pkt.rdata))
+                my_local_set.add(pkt)
     return my_local_set
 
 
@@ -230,17 +230,16 @@ def t_regex(pkt, num):
     for line in lines:
         if line[0] == '!':
             continue
-        else:
-            if type(var) != str:
-                var = codecs.decode(var, 'UTF-8')
-            test = re.search(line.strip(), var)
-            if test:
-                logging.debug("Found tracking match for {}".format(var))
-                if num == 1:
-                    pkt.tracking_tp = True
-                if num == 0:
-                    pkt.tracking_cname = True
-                break
+        if type(var) != str:
+            var = codecs.decode(var, 'UTF-8')
+        test = re.search(line.strip(), var)
+        if test:
+            logging.debug("Found tracking match for {}".format(var))
+            if num == 1:
+                pkt.tracking_tp = True
+            if num == 0:
+                pkt.tracking_cname = True
+            break
     logging.debug("Done with {}".format(pkt.id))
 
 
@@ -252,7 +251,7 @@ def check_tracking(pos_c_pkt, num):
     :return: None
     """
     queue = Queue()
-    for x in range(200):
+    for _ in range(200):
         worker = ''
         if int(num) == 0:
             worker = regexWorker(queue)
@@ -275,11 +274,7 @@ def get_results(pos_c_pkt):
     :param pos_c_pkt: A set of DNS object packets
     :return: A list of CNAME cloaking trackers
     """
-    cname_trackers = set()
-    for pkt in pos_c_pkt:
-        if not pkt.tracking_tp and pkt.tracking_cname:
-            cname_trackers.add(pkt)
-    return cname_trackers
+    return {pkt for pkt in pos_c_pkt if not pkt.tracking_tp and pkt.tracking_cname}
 
 
 def print_pretty(cname_trackers):
@@ -289,9 +284,11 @@ def print_pretty(cname_trackers):
     :return: None
     """
     headers = ["Original subdomain", "DNS Resolved Domain", "Cloaking"]
-    data = []
-    for domain in cname_trackers:
-        data.append([domain.rrname, domain.rdata, domain.tracking_cname])
+    data = [
+        [domain.rrname, domain.rdata, domain.tracking_cname]
+        for domain in cname_trackers
+    ]
+
     print(tabulate(data, headers))
 
 

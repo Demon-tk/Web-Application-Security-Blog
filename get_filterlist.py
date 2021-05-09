@@ -35,9 +35,7 @@ class Worker(Thread):
 def regexer(line):
     line = line.strip()
     # skip if it is commented out or negated
-    if line[0].strip() == "!" or line[:2].strip == '@@':
-        pass
-    else:
+    if line[0].strip() != "!" and line[:2].strip != '@@':
         # make the link object
         myLine = TO_CHANGE(line)
 
@@ -60,7 +58,6 @@ def regexer(line):
 
         myLine.set_form(line)
         mySet.add(myLine)
-    # Add that line to the new file
 
 
 def download_filterlist():
@@ -79,7 +76,7 @@ def convert_to_regex():
         lines = base.readlines()
     # threading here
     queue = Queue()
-    for x in range(500):
+    for _ in range(500):
         worker = Worker(queue)
         worker.daemon = True
         worker.start()
