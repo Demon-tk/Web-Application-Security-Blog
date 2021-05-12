@@ -42,3 +42,8 @@ Run `main.py` in terminal with no arguments
 # Issues
 
 1) Duplicate CNAME Claoking domains will appear
+
+
+##License
+Code is not authoirized for use by any third-parties unless explicit permission is given by the author.  
+
